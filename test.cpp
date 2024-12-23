@@ -1,25 +1,63 @@
 #include <iostream>
 
 int main(){
-int secSteps = 204;
+int secSteps = 3;
 int steps = 68;
 bool cw = false;	
 	
 	
 	int start = secSteps % 8;
-	int remainingSteps = steps - (8 - start);
-	int fullTurns = remainingSteps/8;
-	int end = remainingSteps % 8;
 	
-	std::cout << "secSteps: " << secSteps << std::endl;
-	std::cout << "steps: " << steps << std::endl;
-	std::cout << "start: " << start << std::endl;
-	std::cout << "remainingSteps: " << remainingSteps << std::endl;
-	std::cout << "fullTurns: " << fullTurns << std::endl;
-	std::cout << "end: " << end << std::endl;
-	std::cout << std::endl;
-	
-	int loopEnd = 0;
+	int count = 0;
+	bool done = false;
+	if(cw == true){
+		while(!done){
+			
+			for(int j = 0; j <= 3; j++){
+			}
+			secSteps++;
+			std::cout << "printing step: " << secSteps << std::endl;
+			
+			if(start == 7){
+				start = 0;
+			} else {
+				start++;
+			}
+			
+			count++;
+			
+			if(count == steps){
+				done = true;
+			}
+			
+		}
+	} else {
+		while(!done){
+			
+			for(int j = 0; j <= 3; j++){
+			}
+			secSteps--;
+			std::cout << "printing step: " << secSteps << std::endl;
+			
+			if(start == 0){
+				start = 7;
+			} else {
+				start--;
+			}
+			
+			count++;
+			
+			if(count == steps){
+				done = true;
+			}
+			
+		}
+	}
+	return 0;
+}
+
+
+/*int loopEnd = 0;
 	if((8-start) > steps){
 		loopEnd = start + steps - 1;
 	} else {
@@ -79,6 +117,4 @@ bool cw = false;
 			
 		}
 	}
-	std::cout << "ending secSteps: " << secSteps << std::endl;
-	return 0;
-}
+	std::cout << "ending secSteps: " << secSteps << std::endl;*/
