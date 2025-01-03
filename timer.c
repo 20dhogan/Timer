@@ -137,6 +137,7 @@ void SysTick_Initialize(unsigned int ticks){
 	//Select processor clock
 	//1 = processor clock; 0 = external clock
 	SysTick->CTRL |= SysTick_CTRL_CLKSOURCE_Msk;
+	//SysTick->CTRL |= RCC->CR;
 	
 	//Enables Systick exception request
 	//1 = counting down to zero asserts the SysTick exception request
@@ -149,7 +150,7 @@ void SysTick_Initialize(unsigned int ticks){
 
 void SysTick_Handler(void){
 	if(state == 2){ //This means we are counting down from a preset time.
-		if(gpio_Read(GPIOC, 3) == 0){
+		if(gpio_Read(GPIOC, 3) == 0 || stopped == true){
 			state = 0;
 		} else {
 			if(hour == 0 && minutes == 0 && seconds == 1){
@@ -169,25 +170,12 @@ void SysTick_Handler(void){
 	}
 	
 	if(state == 4){//This means we are just counting up. Like a stopwatch.
-		if(gpio_Read(GPIOC, 3) == 0){
+		if(gpio_Read(GPIOC, 3) == 0 || stopped == true){
 			state = 5;
+			stopped = false;
 			delay_ms(500);
 		} else {
 			incramentSec();
-			/*
-			if(minutes == 59 && seconds == 59){
-				incramentSec();
-				
-				minutes = 0;
-				secSteps = 0;
-				minSteps = 0;
-			} else if(seconds == 59){
-				incramentSec();
-				minutes++;
-				secSteps = 0;
-			} else {
-				incramentSec();
-			}*/
 		}
 	}
 }
@@ -236,7 +224,7 @@ void reset(void){
 	
 	//now we need to add the offset
 	driveSec(hallEffectOffSet, true);
-	driveMin(hallEffectOffSet, true);
+	driveMin(hallEffectOffSet-16, true);
 	
 	//stop sending power to motors so it doesn't get hot.
 	for(int j = 0; j <= 3; j++){
@@ -509,9 +497,12 @@ void buzz_series(void){
 	if(longBuzz == true){
 		for(int i = 0; i < 10; i++){
 			buzz();
+			if(gpio_Read(GPIOC, 3) == 0){
+				i = 10;
+			}
 			delay_ms(700);
 			if(gpio_Read(GPIOC, 3) == 0){
-				i = 3;
+				i = 10;
 			}
 		}
 	} else {
